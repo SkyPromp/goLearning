@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/SkyPromp/goLearning/controllers"
 
-	ginSwagger "github.com/swaggo/gin-swagger"
-	swaggerFiles "github.com/swaggo/files"
+	"github.com/SkyPromp/goLearning/controllers"
+	"github.com/gin-gonic/gin"
+
 	_ "github.com/SkyPromp/goLearning/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var router *gin.Engine
@@ -20,6 +21,11 @@ func main(){
 	router.GET("/todos", controllers.GetAll)
 	router.GET("/todos/:id", controllers.GetById)
 	router.POST("/todos", controllers.AddTodo)
+
+	router.GET("/memory", controllers.GetMemoryManagementExample)
+	router.GET("/alignment", controllers.GetByteAlignment)
+	router.GET("/unsafe", controllers.GetUnsafeExample)
+
 	err := router.Run("localhost:9090")
 
 	if err == nil{

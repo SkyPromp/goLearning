@@ -15,6 +15,54 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/alignment": {
+            "get": {
+                "description": "Returns byte alignment data from the service layer",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "memory"
+                ],
+                "summary": "Get byte alignment information",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.StructSizes"
+                        }
+                    }
+                }
+            }
+        },
+        "/memory": {
+            "get": {
+                "description": "Returns memory usage and GC statistics. Optional query parameter \"goroutine\" determines safe (GC-tracked) or unsafe (non-GC) allocation.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "memory"
+                ],
+                "summary": "Get memory usage",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Set to false to use unsafe memory allocation outside GC",
+                        "name": "goroutine",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.MemStats"
+                        }
+                    }
+                }
+            }
+        },
         "/todos": {
             "get": {
                 "description": "Returns all todos with debug info",
@@ -70,6 +118,9 @@ const docTemplate = `{
         "/todos/{id}": {
             "get": {
                 "description": "Returns a single todo item by its ID. Optional query parameter 'goroutine' runs in a goroutine if true.",
+                "tags": [
+                    "Gouroutine example"
+                ],
                 "summary": "Get todo by ID",
                 "parameters": [
                     {
@@ -113,6 +164,27 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/unsafe": {
+            "get": {
+                "description": "Returns an integer that has been manipulated in an unsafe way",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "memory"
+                ],
+                "summary": "Byte manipulation",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -121,6 +193,37 @@ const docTemplate = `{
             "properties": {
                 "data": {},
                 "duration_ns": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.MemStats": {
+            "type": "object",
+            "properties": {
+                "after-alloc": {
+                    "type": "string"
+                },
+                "after-gc": {
+                    "type": "string"
+                },
+                "before-alloc": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StructSizes": {
+            "type": "object",
+            "properties": {
+                "normal-size": {
+                    "type": "integer"
+                },
+                "normalsalignment": {
+                    "type": "integer"
+                },
+                "packed-alignment": {
+                    "type": "integer"
+                },
+                "packed-size": {
                     "type": "integer"
                 }
             }

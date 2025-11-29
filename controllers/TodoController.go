@@ -28,6 +28,7 @@ func GetAll(context *gin.Context){
 // GetById returns a todo by ID, with optional goroutine query param
 // @Summary Get todo by ID
 // @Description Returns a single todo item by its ID. Optional query parameter 'goroutine' runs in a goroutine if true.
+// @Tags Gouroutine example
 // @Param id path int true "Todo ID"
 // @Param goroutine query bool false "Use goroutine"
 // @Success 200 {object} models.Debug

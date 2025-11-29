@@ -5,6 +5,26 @@ definitions:
       duration_ns:
         type: integer
     type: object
+  models.MemStats:
+    properties:
+      after-alloc:
+        type: string
+      after-gc:
+        type: string
+      before-alloc:
+        type: string
+    type: object
+  models.StructSizes:
+    properties:
+      normal-size:
+        type: integer
+      normalsalignment:
+        type: integer
+      packed-alignment:
+        type: integer
+      packed-size:
+        type: integer
+    type: object
   models.Todo:
     properties:
       completed:
@@ -17,6 +37,38 @@ definitions:
 info:
   contact: {}
 paths:
+  /alignment:
+    get:
+      description: Returns byte alignment data from the service layer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StructSizes'
+      summary: Get byte alignment information
+      tags:
+      - memory
+  /memory:
+    get:
+      description: Returns memory usage and GC statistics. Optional query parameter
+        "goroutine" determines safe (GC-tracked) or unsafe (non-GC) allocation.
+      parameters:
+      - description: Set to false to use unsafe memory allocation outside GC
+        in: query
+        name: goroutine
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MemStats'
+      summary: Get memory usage
+      tags:
+      - memory
   /todos:
     get:
       description: Returns all todos with debug info
@@ -83,4 +135,20 @@ paths:
               type: string
             type: object
       summary: Get todo by ID
+      tags:
+      - Gouroutine example
+  /unsafe:
+    get:
+      description: Returns an integer that has been manipulated in an unsafe way
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            format: int32
+            type: integer
+      summary: Byte manipulation
+      tags:
+      - memory
 swagger: "2.0"
