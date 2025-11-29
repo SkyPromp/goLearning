@@ -2,27 +2,15 @@ package controllers
 
 import (
 	"fmt"
-	"errors"
 	"strconv"
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"github.com/SkyPromp/goLearning/models"
+	"github.com/SkyPromp/goLearning/services"
 )
 
-type todo struct {
-	Id int `json:"id"`
-	Task string `json:"title"`
-	Completed bool `json:"completed"`
-}
-
-var todos = []todo{
-	{Id: 1, Task: "Do something", Completed:false},
-	{Id: 2, Task: "Do nothing", Completed:false},
-	{Id: 3, Task: "Do something else", Completed:false},
-	{Id: 4, Task: "Do whatever", Completed:false},
-}
-
 func GetAll(context *gin.Context){
-	context.IndentedJSON(http.StatusOK, todos)
+	context.IndentedJSON(http.StatusOK, services.GetAll())
 }
 
 func GetByIdHandler(context *gin.Context){
@@ -33,7 +21,7 @@ func GetByIdHandler(context *gin.Context){
 		return
 	}
 
-	value, err := getById(id)
+	value, err := services.GetById(id)
 
 	if err != nil{
 		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "Item not found"})
@@ -43,25 +31,15 @@ func GetByIdHandler(context *gin.Context){
 	context.IndentedJSON(http.StatusOK, value)
 }
 
-func getById(id int) (*todo, error){
-	for _, value := range todos {
-		if value.Id == id{
-			return &value, nil
-		}
-	}
-
-	return nil, errors.New("item not found")
-}
-
 func AddTodo(context *gin.Context){
-	var value todo
+	var value models.Todo
 
 	if err := context.BindJSON(&value); err != nil {
 		fmt.Println("Error has been found")
 		return;
 	}
 
-	todos = append(todos, value)
+	services.AddTodo(value)
 
 	context.IndentedJSON(http.StatusCreated, value)
 }
