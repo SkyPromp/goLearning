@@ -8,8 +8,9 @@ import (
 
 func main(){
 	router := gin.Default()
+	router.GET("/", controllers.GetRoot)
 	router.GET("/todos", controllers.GetAll)
-	router.GET("/todos/:id", controllers.GetByIdHandler)
+	router.GET("/todos/:id", controllers.GetById)
 	router.POST("/todos", controllers.AddTodo)
 	err := router.Run("localhost:9090")
 

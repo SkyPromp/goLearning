@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"time"
 	"strconv"
 	"net/http"
 	"github.com/gin-gonic/gin"
@@ -10,25 +11,50 @@ import (
 )
 
 func GetAll(context *gin.Context){
-	context.IndentedJSON(http.StatusOK, services.GetAll())
+	start := time.Now()
+	value := services.GetAll()
+	duration := int64(time.Since(start))
+
+	debugValue := models.Debug{Duration: duration, Data: value}
+
+	context.IndentedJSON(http.StatusOK, debugValue)
 }
 
-func GetByIdHandler(context *gin.Context){
+func GetById(context *gin.Context){
 	id, err := strconv.Atoi(context.Param("id"))
+	usesGoRoutine, err2 := strconv.ParseBool(context.DefaultQuery("goroutine", "false"))
+
+	if(err2 != nil){
+		//usesGoRoutine = false
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Could not convert data to boolean"})
+		return
+	}
 
 	if (err != nil) {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Id could not be converted to type: int"})
 		return
 	}
 
-	value, err := services.GetById(id)
+	start := time.Now()
+
+	var value *models.Todo
+
+	if(usesGoRoutine){
+		value, err = services.GetByIdGoroutine(id)
+	} else{
+		value, err = services.GetById(id)
+	}
+
+	duration := int64(time.Since(start))
 
 	if err != nil{
 		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "Item not found"})
 		return
 	}
 
-	context.IndentedJSON(http.StatusOK, value)
+	debugValue := models.Debug{Duration: duration, Data: *value}
+
+	context.IndentedJSON(http.StatusOK, debugValue)
 }
 
 func AddTodo(context *gin.Context){
@@ -39,8 +65,12 @@ func AddTodo(context *gin.Context){
 		return;
 	}
 
+	start := time.Now()
 	services.AddTodo(value)
+	duration := int64(time.Since(start))
 
-	context.IndentedJSON(http.StatusCreated, value)
+	debugValue := models.Debug{Duration: duration, Data: value}
+
+	context.IndentedJSON(http.StatusCreated, debugValue)
 }
 
