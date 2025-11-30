@@ -57,6 +57,17 @@ func GetByIdGoroutine(id int) (*models.Todo, error){
 	return nil, errors.New("item not found")
 }
 
-func AddTodo(value models.Todo){
+func AddTodo(value models.Todo) (models.Todo){
+	max_id := -1
+
+	for _, todo := range data.Todos{
+		if todo.Id > max_id{
+			max_id = todo.Id
+		}
+	}
+
+	value.Id = max_id + 1
 	data.Todos = append(data.Todos, value)
+
+	return value
 }

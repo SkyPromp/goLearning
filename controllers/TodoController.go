@@ -91,10 +91,10 @@ func AddTodo(context *gin.Context){
 	}
 
 	start := time.Now()
-	services.AddTodo(value)
+	newTodo := services.AddTodo(value)
 	duration := int64(time.Since(start))
 
-	debugValue := models.Debug{Duration: duration, Data: value}
+	debugValue := models.Debug{Duration: duration, Data: newTodo}
 
 	context.IndentedJSON(http.StatusCreated, debugValue)
 }
