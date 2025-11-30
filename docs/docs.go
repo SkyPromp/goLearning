@@ -49,7 +49,7 @@ const docTemplate = `{
                     {
                         "type": "boolean",
                         "description": "Set to false to use unsafe memory allocation outside GC",
-                        "name": "goroutine",
+                        "name": "is-safe",
                         "in": "query"
                     }
                 ],

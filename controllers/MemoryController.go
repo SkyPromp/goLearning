@@ -12,12 +12,12 @@ import (
 // @Summary Get memory usage
 // @Description Returns memory usage and GC statistics. Optional query parameter "goroutine" determines safe (GC-tracked) or unsafe (non-GC) allocation.
 // @Tags memory
-// @Param goroutine query bool false "Set to false to use unsafe memory allocation outside GC"
+// @Param is-safe query bool false "Set to false to use unsafe memory allocation outside GC"
 // @Produce json
 // @Success 200 {object} models.MemStats
 // @Router /memory [get]
 func GetMemoryManagementExample(context *gin.Context){
-	isSafe, err := strconv.ParseBool(context.DefaultQuery("goroutine", "true"))
+	isSafe, err := strconv.ParseBool(context.DefaultQuery("is-safe", "true"))
 
 	if(err != nil){
 		isSafe = true
