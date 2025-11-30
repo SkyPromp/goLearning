@@ -18,7 +18,7 @@ import (
 func GetAll(context *gin.Context){
 	start := time.Now()
 	value := services.GetAll()
-	duration := int64(time.Since(start))
+	duration := time.Since(start).Nanoseconds()
 
 	debugValue := models.Debug{Duration: duration, Data: value}
 
@@ -60,7 +60,7 @@ func GetById(context *gin.Context){
 		value, err = services.GetById(id)
 	}
 
-	duration := int64(time.Since(start))
+	duration := time.Since(start).Nanoseconds()
 
 	if err != nil{
 		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "Item not found"})
@@ -92,7 +92,7 @@ func AddTodo(context *gin.Context){
 
 	start := time.Now()
 	newTodo := services.AddTodo(value)
-	duration := int64(time.Since(start))
+	duration := time.Since(start).Nanoseconds()
 
 	debugValue := models.Debug{Duration: duration, Data: newTodo}
 
